@@ -1,0 +1,61 @@
+{
+  "users": [
+    {
+      "id": "533b",
+      "email": "amirchik@gmail.com",
+      "name": "alxamir",
+      "surname": "aaboyev",
+      "password": "20081010Al!"
+    },
+    {
+      "id": "caab",
+      "email": "alsafirbozorov5@gmail.com",
+      "name": "alsldldldl",
+      "surname": "awdaddaw",
+      "password": "helloooo3W!"
+    }
+  ],
+  "wallets": [
+    {
+      "id": "1c88",
+      "name": "alsldldldl",
+      "currency": "UZS"
+    },
+    {
+      "id": "20c3",
+      "name": "",
+      "currency": ""
+    },
+    {
+      "id": "d740",
+      "name": "alsldldldl",
+      "currency": "RUB"
+    },
+    {
+      "id": "deff",
+      "name": "alsldldldl",
+      "currency": "RUB"
+    },
+    {
+      "id": "7d54",
+      "name": "",
+      "currency": ""
+    },
+    {
+      "id": "7960",
+      "name": "",
+      "currency": ""
+    },
+    {
+      "id": "d57b",
+      "name": "alsldldldl",
+      "currency": "UZS"
+    },
+    {
+      "id": "f4a0",
+      "name": "weded",
+      "currency": "UZS"
+    }
+  ],
+  "tanzaktions": []
+}
