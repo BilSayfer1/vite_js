@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Добавить транзакцию</h1>
+        <form id="transactionForm">
+            <input type="text" id="wallet" placeholder="Из кошелька" required>
+            <input type="number" id="amount" placeholder="Сумма" required>
+            <input type="text" id="category" placeholder="Категория" required>
+            <button type="submit">Добавить</button>
+        </form>
+    </div>
+    
+    <center>
+        <div class="tranzaktions_container">
+            <div class="table">
+                <div class="row header">
+                    <div class="cell">ID</div>
+                    <div class="cell">Отправлено с кошелька</div>
+                    <div class="cell">Категория</div>
+                    <div class="cell">Сумма транзакции</div>
+                    <div class="cell">Когда</div>
+                </div>
+                <div class="row_cont">
+                </div>
+            </div>
+        </div>
+    </center>
+    <script type="module" src="./index.js"></script>
+</body>
+</html>

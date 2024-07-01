@@ -13,6 +13,11 @@ async function validateForm(event) {
     const surname = surnameInput.value.trim();
     const password = passwordInput.value.trim();
 
+    if (!email || !name || !surname || !password) {
+        alert('Все поля должны быть заполнены');
+        return;
+    }
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const nameRegex = /^[A-ZА-ЯЁ][a-zа-яё'-]*$/i;
     const surnameRegex = /^[A-ZА-ЯЁ][a-zа-яё'-]*$/i;
@@ -46,7 +51,7 @@ async function validateForm(event) {
     };
 
     try {
-        const response = await fetch(base_url + '/users', {
+        const response = await fetch(`${base_url}/users`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

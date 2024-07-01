@@ -22,15 +22,15 @@ if (signInForm) {
         const passwordInput = document.querySelector('.parol');
         const password = passwordInput.value.trim();
 
-        console.log('Сохранённый Email:', storedEmail);
-        console.log('Сохранённый Пароль:', storedPassword);
-        console.log('Введённый Email:', email);
-        console.log('Введённый Пароль:', password);
+        if (!email || !password) {
+            alert('Все поля должны быть заполнены');
+            return;
+        }
 
         if (storedEmail === email && storedPassword === password) {
             location.assign('/');
         } else {
-            alert('Что ты ле Жидкий нормально вводи пароль');
+            alert('Введите правильный email или пароль');
         }
     };
 }

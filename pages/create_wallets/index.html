@@ -10,14 +10,14 @@
     <div class="container">
         <h1>Добавить кошелек</h1>
         <form id="walletForm">
-            <input id="name" type="text" name="name" placeholder="Имя">
-            <input id="currency" type="text" name="currency" placeholder="Валюта">
+            <input id="name" type="text" name="name" placeholder="Имя" required>
+            <input id="currency" type="text" name="currency" placeholder="Валюта" required>
+            <input id="balance" type="text" name="balance" placeholder="Сумма">
             <input type="submit" value="Добавить">
         </form>
     </div>
 
-    <div class="container_wallet" id="cards-container">
-    </div>
+    <div class="container_wallet" id="cards-container"></div>
 
     <script type="module" src="./index.js"></script>
 </body>

@@ -1,4 +1,4 @@
-body, h1, form, input {
+body, h1, form, input, div {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -40,7 +40,7 @@ input[type="text"] {
 }
 
 input[type="submit"] {
-    background-color: blue;
+    background-color:blue;
     color: white;
     border: none;
     cursor: pointer;
@@ -48,7 +48,7 @@ input[type="submit"] {
 }
 
 input[type="submit"]:hover {
-    background-color: black;
+    background-color: rgb(133, 133, 133);
 }
 
 input[type="text"]:focus, input[type="submit"]:focus {
@@ -68,6 +68,9 @@ input[type="text"]:focus, input[type="submit"]:focus {
     justify-content: space-between;
     margin: 10px;
 }
+
 .container_wallet {
     display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
 }

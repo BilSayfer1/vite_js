@@ -1,37 +1,40 @@
 import { base_url } from '/lib/http.js';
 
-async function submitForm(event) {
-    event.preventDefault(); 
+document.getElementById('walletForm').onsubmit = function(event) {
+    event.preventDefault();
     let name = document.getElementById('name').value.trim();
     let currency = document.getElementById('currency').value.trim();
+    let total = document.getElementById('balance').value.trim()
+
+    if (!name || !currency) {
+        alert('Все поля должны быть заполнены');
+        return;
+    }
 
     let wallet = {
         name: name,
-        currency: currency
+        currency: currency,
+        balance: total
     };
 
-    try {
-        const response = await fetch(`${base_url}/wallets`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(wallet)
-        });
-
-        if (response.ok) {
-            const data = await response.json();
-            console.log('Кошелек создан', data);
-            document.getElementById('walletForm').reset();
-            saveWalletToLocalStorage(data);
-            addWalletToContainer(data);
-        } else {
-            console.error('Ошибка при создании кошелька:', response.statusText);
-        }
-    } catch (error) {
+    fetch(`${base_url}/wallets`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(wallet)
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Кошелек создан', data);
+        document.getElementById('walletForm').reset();
+        saveWalletToLocalStorage(data);
+        addWalletToContainer(data);
+    })
+    .catch(error => {
         console.error('Ошибка:', error);
-    }
-}
+    });
+};
 
 function saveWalletToLocalStorage(wallet) {
     let wallets = JSON.parse(localStorage.getItem('wallets')) || [];
@@ -39,16 +42,11 @@ function saveWalletToLocalStorage(wallet) {
     localStorage.setItem('wallets', JSON.stringify(wallets));
 }
 
-function loadWallets() {
-    let wallets = JSON.parse(localStorage.getItem('wallets')) || [];
-    wallets.forEach(wallet => addWalletToContainer(wallet));
-}
-
 function addWalletToContainer(wallet) {
     const cardsContainer = document.getElementById('cards-container');
     
     const walletItem = document.createElement('div');
-    walletItem.classList.add('wallet-item');
+    walletItem.className = 'wallet-item';
     walletItem.style.backgroundColor = getRandomColor();
     
     const nameDiv = document.createElement('div');
@@ -72,5 +70,9 @@ function getRandomColor() {
     return color;
 }
 
-document.getElementById('walletForm').onsubmit = submitForm;
-window.onload = loadWallets;
+loadWallets();
+
+function loadWallets() {
+    let wallets = JSON.parse(localStorage.getItem('wallets')) || [];
+    wallets.forEach(wallet => addWalletToContainer(wallet));
+}
