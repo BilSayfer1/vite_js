@@ -148,7 +148,6 @@ tr:hover {
 .container_wallet {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
 }
 
 .cards-container {

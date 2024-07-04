@@ -1,48 +1,46 @@
-import { base_url } from '/lib/http.js';
+import { postRequest } from '/lib/http.js';
 
 let form = document.getElementById('transactionForm');
-let row_cont = document.querySelector('.row_cont');
+let walletInput = document.getElementById('wallet');
+let amountInput = document.getElementById('amount');
+let categoryInput = document.getElementById('category');
+let transactionsTable = document.getElementById('transactionsTable');
 
-form.onsubmit = function(event) {
+form.onsubmit = async function(event) {
     event.preventDefault();
+    let walletName = walletInput.value.trim();
+    let amount = parseFloat(amountInput.value.trim());
+    let category = categoryInput.value.trim();
 
-    let wallet = document.getElementById('wallet').value.trim();
-    let amount = document.getElementById('amount').value.trim();
-    let category = document.getElementById('category').value.trim();
-
-    if (wallet === '' || amount === '' || category === '') {
-        alert('Заполните все поля');
+    if (!walletName || isNaN(amount) || !category) {
+        alert('Все поля должны быть заполнены');
         return;
     }
 
     let transaction = {
-        id: crypto.randomUUID(),
-        wallet_name: wallet,
+        wallet: walletName,
+        amount: amount,
         category: category,
-        total_trank: amount,
-        chislo: new Date().toISOString()
+        date: new Date().toISOString()
     };
 
-    console.log(transaction);
+    try {
+        console.log('Sending request to create transaction:', transaction);
+        const data = await postRequest('/tanzaktions', transaction);
 
-    fetch(base_url + "/tanzaktions", {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(transaction)
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log('Транзакция создана', data);
-        addTransactionRow(data);
-    })
-    .catch(error => {
+        if (!data) {
+            throw new Error('Failed to create transaction');
+        }
+
+        console.log('Transaction created:', data);
+        appendTransactionToTable(data);
+        document.getElementById('transactionForm').reset();
+    } catch (error) {
         console.error('Ошибка:', error);
-    });
+    }
 };
 
-function addTransactionRow(transaction) {
+function appendTransactionToTable(transaction) {
     const row = document.createElement('div');
     row.className = 'row';
 
@@ -52,7 +50,7 @@ function addTransactionRow(transaction) {
 
     const walletCell = document.createElement('div');
     walletCell.className = 'cell';
-    walletCell.textContent = transaction.wallet_name;
+    walletCell.textContent = transaction.wallet;
 
     const categoryCell = document.createElement('div');
     categoryCell.className = 'cell';
@@ -60,19 +58,17 @@ function addTransactionRow(transaction) {
 
     const amountCell = document.createElement('div');
     amountCell.className = 'cell';
-    amountCell.textContent = transaction.total_trank;
+    amountCell.textContent = transaction.amount;
 
     const dateCell = document.createElement('div');
     dateCell.className = 'cell';
-    dateCell.textContent = formatDate(transaction.chislo);
+    dateCell.textContent = new Date(transaction.date).toLocaleString();
 
-    row.append(idCell, walletCell, categoryCell, amountCell, dateCell);
+    row.appendChild(idCell);
+    row.appendChild(walletCell);
+    row.appendChild(categoryCell);
+    row.appendChild(amountCell);
+    row.appendChild(dateCell);
 
-    row_cont.append(row);
-}
-
-function formatDate(dateString) {
-    const date = new Date(dateString);
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return date.toLocaleDateString('ru-RU', options);
+    transactionsTable.appendChild(row);
 }

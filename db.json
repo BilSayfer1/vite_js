@@ -1,73 +1,21 @@
 {
   "users": [
     {
-      "id": "e620",
-      "email": "alsafirbozorov5@gmail.com",
-      "name": "alsldldldl",
-      "surname": "awdaddaw",
-      "password": "20081014Al!"
+      "id": "d41e",
+      "email": "am@gmail.com",
+      "name": "am",
+      "surname": "amov",
+      "password": "20081013Al!"
     }
   ],
-  "wallets": [
-    {
-      "id": "da24",
-      "name": "alsldldldl",
-      "currency": "UZS"
-    },
-    {
-      "id": "34cb",
-      "name": "alsldldldl",
-      "currency": "UZS",
-      "balance": "2000000"
-    },
-    {
-      "id": "ed22",
-      "name": "alsldldldl",
-      "currency": "RUB",
-      "balance": "2000000"
-    },
-    {
-      "id": "06fe",
-      "name": "hello world",
-      "currency": "RUB",
-      "balance": "2000000"
-    }
-  ],
+  "wallets": [],
   "tanzaktions": [
     {
-      "id": "82d6b9b7-f2f4-415b-9609-91f8ed826b79",
-      "wallet_name": "Hello world",
-      "category": "car",
-      "total_trank": "2000",
-      "chislo": "2024-07-01T12:29:01.308Z"
-    },
-    {
-      "id": "fd135d3a-fa92-453e-b753-c44798e90319",
-      "wallet_name": "Hello world",
-      "category": "car",
-      "total_trank": "2000",
-      "chislo": "2024-07-01T12:34:30.347Z"
-    },
-    {
-      "id": "36aebfe5-bfc8-4b65-96fc-ed06facf169c",
-      "wallet_name": "Hello world",
-      "category": "car",
-      "total_trank": "2000",
-      "chislo": "2024-07-01T12:34:33.199Z"
-    },
-    {
-      "id": "580241f2-33bc-44e4-8d73-3185b890dcc9",
-      "wallet_name": "Hello world",
-      "category": "car",
-      "total_trank": "2000",
-      "chislo": "2024-07-01T12:34:34.237Z"
-    },
-    {
-      "id": "3cde63fa-a529-41ea-829e-3f6ce0f9462e",
-      "wallet_name": "Hello world",
-      "category": "car",
-      "total_trank": "2000",
-      "chislo": "2024-07-01T12:34:35.315Z"
+      "id": "f4e5",
+      "wallet": "alsldldldl",
+      "amount": 11,
+      "category": "home",
+      "date": "2024-07-04T22:36:49.013Z"
     }
   ]
 }

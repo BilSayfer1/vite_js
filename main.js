@@ -1,3 +1,5 @@
+import { getRequest, patchRequest, deleteRequest } from '/lib/http.js';
+
 const header = document.getElementById('main-header');
 
 const glavHeader = document.createElement('div');
@@ -16,11 +18,11 @@ walletsLink.textContent = 'Мои Кошельки';
 
 const transactionsLink = document.createElement('a');
 transactionsLink.href = '#';
-transactionsLink.textContent = 'Мои транкзакции';
+transactionsLink.textContent = 'Мои транзакции';
 
 transactionsLink.onclick = () => {
-    location.assign('/pages/create_tranzaktions/')
-}
+    location.assign('/pages/create_tranzaktions/');
+};
 
 leftMenu.append(mainLink);
 leftMenu.append(walletsLink);
@@ -40,7 +42,7 @@ logoutIcon.src = '/images/icons8-выход-50.png';
 logoutIcon.onclick = () => {
     localStorage.clear(); 
     location.assign('/pages/sign_in/');
-}
+};
 
 rightMenu.append(userEmailLink);
 rightMenu.append(logoutIcon);
@@ -100,27 +102,40 @@ cardsContainer.append(cardsMain);
 
 walletsLink.onclick = () => {
     location.assign('/pages/create_wallets/');
-}
+};
 
-function loadWallets() {
-    let wallets = JSON.parse(localStorage.getItem('wallets')) || [];
-    wallets.forEach(wallet => addWalletToContainer(wallet));
+async function loadWallets() {
+    try {
+        const wallets = await getRequest('/wallets');
+        if (wallets && Array.isArray(wallets)) {
+            wallets.forEach(wallet => addWalletToContainer(wallet));
+        } else {
+            console.error('Invalid wallets data:', wallets);
+        }
+    } catch (error) {
+        console.error('Error loading wallets:', error);
+    }
 }
 
 function addWalletToContainer(wallet) {
+    if (!wallet || !wallet.name || !wallet.currency) {
+        console.error('Invalid wallet data:', wallet);
+        return;
+    }
+
     const walletItem = document.createElement('div');
     walletItem.className = 'wallet-item';
     walletItem.style.backgroundColor = getRandomColor();
-    
+
     const nameDiv = document.createElement('div');
     nameDiv.textContent = wallet.name;
-    
+
     const currencyDiv = document.createElement('div');
     currencyDiv.textContent = wallet.currency;
-    
+
     walletItem.appendChild(nameDiv);
     walletItem.appendChild(currencyDiv);
-    
+
     cardsContainer.appendChild(walletItem);
 }
 
