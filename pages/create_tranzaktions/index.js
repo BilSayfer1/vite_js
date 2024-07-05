@@ -1,46 +1,87 @@
-import { postRequest } from '/lib/http.js';
+import { base_url } from '/lib/http.js';
 
-let form = document.getElementById('transactionForm');
-let walletInput = document.getElementById('wallet');
+let transactionForm = document.getElementById('transactionForm');
+let rowCont = document.querySelector('.row_cont');
 let amountInput = document.getElementById('amount');
-let categoryInput = document.getElementById('category');
-let transactionsTable = document.getElementById('transactionsTable');
 
-form.onsubmit = async function(event) {
+transactionForm.onsubmit = function(event) {
     event.preventDefault();
-    let walletName = walletInput.value.trim();
-    let amount = parseFloat(amountInput.value.trim());
-    let category = categoryInput.value.trim();
 
-    if (!walletName || isNaN(amount) || !category) {
-        alert('Все поля должны быть заполнены');
+    let wallet = document.getElementById('wallet').value.trim();
+    let amount = parseFloat(document.getElementById('amount').value.trim());
+    let category = document.getElementById('category').value.trim();
+
+    if (wallet === '' || isNaN(amount) || category === '') {
+        alert('Заполните все поля');
         return;
     }
 
-    let transaction = {
-        wallet: walletName,
-        amount: amount,
-        category: category,
-        date: new Date().toISOString()
-    };
+    fetch(base_url + "/wallets?name=" + wallet)
+        .then(response => response.json())
+        .then(wallets => {
+            if (wallets.length === 0) {
+                alert('Кошелек не найден');
+                return;
+            }
 
-    try {
-        console.log('Sending request to create transaction:', transaction);
-        const data = await postRequest('/tanzaktions', transaction);
+            let walletObj = wallets[0];
 
-        if (!data) {
-            throw new Error('Failed to create transaction');
-        }
+            if (walletObj.balance < amount) {
+                amountInput.style.border = '2px solid red';
+                alert('Недостаточно средств');
+                return;
+            } else {
+                amountInput.style.border = '';
 
-        console.log('Transaction created:', data);
-        appendTransactionToTable(data);
-        document.getElementById('transactionForm').reset();
-    } catch (error) {
-        console.error('Ошибка:', error);
-    }
+                let transaction = {
+                    id: crypto.randomUUID(),
+                    wallet_name: wallet,
+                    category: category,
+                    total_trank: amount,
+                    chislo: new Date().toISOString()
+                };
+
+                fetch(base_url + "/tanzaktions", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(transaction)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Транзакция создана', data);
+                    addTransactionRow(data);
+
+                    walletObj.balance -= amount;
+
+                    fetch(base_url + "/wallets/" + walletObj.id, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(walletObj)
+                    })
+                    .then(response => response.json())
+                    .then(updatedWallet => {
+                        console.log('Баланс обновлен', updatedWallet);
+                        updateWalletInLocalStorage(updatedWallet);
+                    })
+                    .catch(error => {
+                        console.error('Ошибка обновления баланса:', error);
+                    });
+                })
+                .catch(error => {
+                    console.error('Ошибка создания транзакции:', error);
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Ошибка получения кошелька:', error);
+        });
 };
 
-function appendTransactionToTable(transaction) {
+function addTransactionRow(transaction) {
     const row = document.createElement('div');
     row.className = 'row';
 
@@ -50,7 +91,7 @@ function appendTransactionToTable(transaction) {
 
     const walletCell = document.createElement('div');
     walletCell.className = 'cell';
-    walletCell.textContent = transaction.wallet;
+    walletCell.textContent = transaction.wallet_name;
 
     const categoryCell = document.createElement('div');
     categoryCell.className = 'cell';
@@ -58,17 +99,28 @@ function appendTransactionToTable(transaction) {
 
     const amountCell = document.createElement('div');
     amountCell.className = 'cell';
-    amountCell.textContent = transaction.amount;
+    amountCell.textContent = transaction.total_trank;
 
     const dateCell = document.createElement('div');
     dateCell.className = 'cell';
-    dateCell.textContent = new Date(transaction.date).toLocaleString();
+    dateCell.textContent = formatDate(transaction.chislo);
 
-    row.appendChild(idCell);
-    row.appendChild(walletCell);
-    row.appendChild(categoryCell);
-    row.appendChild(amountCell);
-    row.appendChild(dateCell);
+    row.append(idCell, walletCell, categoryCell, amountCell, dateCell);
 
-    transactionsTable.appendChild(row);
+    rowCont.append(row);
+}
+
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return date.toLocaleDateString('ru-RU', options);
+}
+
+function updateWalletInLocalStorage(updatedWallet) {
+    let wallets = JSON.parse(localStorage.getItem('wallets')) || [];
+    let walletIndex = wallets.findIndex(wallet => wallet.id === updatedWallet.id);
+    if (walletIndex !== -1) {
+        wallets[walletIndex] = updatedWallet;
+        localStorage.setItem('wallets', JSON.stringify(wallets));
+    }
 }

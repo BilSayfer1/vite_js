@@ -1,13 +1,11 @@
-import { getRequest, postRequest, deleteRequest } from '/lib/http.js';
+import { base_url } from '/lib/http.js';
 
-let form = document.getElementById('walletForm');
-form.onsubmit = async function(event) {
+let form = document.getElementById('walletForm')
+form.onsubmit = function(event) {
     event.preventDefault();
     let name = document.getElementById('name').value.trim();
     let currency = document.getElementById('currency').value.trim();
     let balance = parseFloat(document.getElementById('balance').value.trim());
-
-    console.log('Form data:', { name, currency, balance });
 
     if (!name || !currency || isNaN(balance)) {
         alert('Все поля должны быть заполнены');
@@ -20,21 +18,23 @@ form.onsubmit = async function(event) {
         balance: balance
     };
 
-    try {
-        console.log('Sending request to create wallet:', wallet);
-        const data = await postRequest('/wallets', wallet);
-
-        if (!data) {
-            throw new Error('Failed to create wallet');
-        }
-
-        console.log('Wallet created:', data);
+    fetch(`${base_url}/wallets`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(wallet)
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Кошелек создан', data);
         document.getElementById('walletForm').reset();
         saveWalletToLocalStorage(data);
         addWalletToContainer(data);
-    } catch (error) {
-        console.log('Ошибка:', error);
-    }
+    })
+    .catch(error => {
+        console.error('Ошибка:', error);
+    });
 };
 
 function saveWalletToLocalStorage(wallet) {
@@ -44,10 +44,6 @@ function saveWalletToLocalStorage(wallet) {
 }
 
 function addWalletToContainer(wallet) {
-    if (!wallet || !wallet.name || !wallet.currency) {
-        return;
-    }
-
     const cardsContainer = document.getElementById('cards-container');
     
     const walletItem = document.createElement('div');
@@ -63,11 +59,11 @@ function addWalletToContainer(wallet) {
     const balanceDiv = document.createElement('div');
     balanceDiv.textContent = 'Баланс: ' + wallet.balance;
     
-    walletItem.append(nameDiv);
-    walletItem.append(currencyDiv);
-    walletItem.append(balanceDiv);
+    walletItem.appendChild(nameDiv);
+    walletItem.appendChild(currencyDiv);
+    walletItem.appendChild(balanceDiv);
     
-    cardsContainer.append(walletItem);
+    cardsContainer.appendChild(walletItem);
 }
 
 function getRandomColor() {
@@ -83,4 +79,4 @@ function loadWallets() {
     let wallets = JSON.parse(localStorage.getItem('wallets')) || [];
     wallets.forEach(wallet => addWalletToContainer(wallet));
 }
-loadWallets();
+loadWallets(); 
